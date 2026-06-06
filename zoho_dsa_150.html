@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoho DSA Roadmap — 150 Problems</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #ffffff0f;
+    --accent: #7c5cfc;
+    --accent2: #e8614b;
+    --accent3: #3ecfac;
+    --accent4: #f0b429;
+    --accent5: #e879f9;
+    --text: #f0eff8;
+    --muted: #8884a8;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(124,92,252,0.04) 1px, transparent 1px),linear-gradient(90deg,rgba(124,92,252,0.04) 1px,transparent 1px);
+    background-size: 48px 48px; pointer-events: none; z-index: 0;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  header { padding: 60px 0 40px; border-bottom: 1px solid var(--border); }
+  .header-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; }
+  h1 { font-size: clamp(36px,6vw,64px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; }
+  h1 span { color: var(--accent); }
+  .header-sub { margin-top: 16px; color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 560px; }
+  .stats-bar { display: flex; gap: 32px; margin-top: 32px; flex-wrap: wrap; }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .legend { display: flex; gap: 20px; margin: 32px 0 0; flex-wrap: wrap; align-items: center; font-family: var(--mono); font-size: 12px; }
+  .leg { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .easy-dot { background: var(--accent3); } .medium-dot { background: var(--accent4); } .hard-dot { background: var(--accent2); }
+  .filter-bar { position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.93); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 0; }
+  .filter-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .filter-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .filter-btn:hover, .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .progress-bar-wrap { margin-left: auto; display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .prog-track { width: 120px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; width: 0%; }
+  .section { padding: 40px 0 0; }
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 2px; }
+  .section-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+  .section-count { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .prob-row { display: grid; grid-template-columns: 28px 36px 1fr 78px 94px 82px; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 6px; border: 1px solid transparent; margin-bottom: 4px; transition: all 0.15s; cursor: pointer; }
+  .prob-row:hover { background: var(--surface2); border-color: var(--border); }
+  .prob-row.done { background: rgba(62,207,172,0.04); }
+  .prob-row.done .prob-name { text-decoration: line-through; color: var(--muted); }
+  .check-box { width: 18px; height: 18px; border: 1.5px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+  .prob-row.done .check-box { background: var(--accent3); border-color: var(--accent3); }
+  .check-box svg { display: none; }
+  .prob-row.done .check-box svg { display: block; }
+  .prob-num { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .prob-name { font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--text); }
+  .diff-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; padding: 2px 8px; border-radius: 3px; text-align: center; text-transform: uppercase; font-weight: 700; }
+  .diff-easy   { color: var(--accent3); background: rgba(62,207,172,0.1); }
+  .diff-medium { color: var(--accent4); background: rgba(240,180,41,0.1); }
+  .diff-hard   { color: var(--accent2); background: rgba(232,97,75,0.1); }
+  .link-btn { font-family: var(--mono); font-size: 10px; padding: 4px 10px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; text-align: center; transition: all 0.15s; display: block; white-space: nowrap; }
+  .link-btn:hover { color: var(--text); border-color: var(--accent); background: rgba(124,92,252,0.12); }
+  footer { padding: 48px 0; margin-top: 60px; border-top: 1px solid var(--border); text-align: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  @media (max-width: 640px) { .prob-row { grid-template-columns: 28px 1fr 62px 90px; } .prob-num { display: none; } .gfg-btn { display: none; } }
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+  <div class="header-tag">// Crack Zoho · DSA Prep</div>
+  <h1>150 Problems.<br><span>Zero excuses.</span></h1>
+  <p class="header-sub">Every problem links directly to the exact LeetCode & GFG problem page. Click any row to mark solved. Progress saved in browser.</p>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">150</div><div class="stat-label">Problems</div></div>
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">Topics</div></div>
+    <div class="stat"><div class="stat-num" id="done-count">0</div><div class="stat-label">Solved</div></div>
+    <div class="stat"><div class="stat-num" id="pct">0%</div><div class="stat-label">Complete</div></div>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot easy-dot"></div>Easy</div>
+    <div class="leg"><div class="leg-dot medium-dot"></div>Medium</div>
+    <div class="leg"><div class="leg-dot hard-dot"></div>Hard</div>
+    <div style="margin-left:8px;color:var(--muted);font-size:11px;">· Click row to mark solved · Links open exact problem pages</div>
+  </div>
+</div>
+</header>
+
+<div class="filter-bar">
+  <div class="filter-inner">
+    <button class="filter-btn active" onclick="filterTopic('all',this)">All</button>
+    <button class="filter-btn" onclick="filterTopic('strings',this)">Strings</button>
+    <button class="filter-btn" onclick="filterTopic('arrays',this)">Arrays</button>
+    <button class="filter-btn" onclick="filterTopic('hashmap',this)">Hashing</button>
+    <button class="filter-btn" onclick="filterTopic('stack',this)">Stack/Queue</button>
+    <button class="filter-btn" onclick="filterTopic('ll',this)">Linked List</button>
+    <button class="filter-btn" onclick="filterTopic('trees',this)">Trees</button>
+    <button class="filter-btn" onclick="filterTopic('dp',this)">DP</button>
+    <button class="filter-btn" onclick="filterTopic('search',this)">Binary Search</button>
+    <button class="filter-btn" onclick="filterTopic('graph',this)">Graph</button>
+    <button class="filter-btn" onclick="filterTopic('math',this)">Math</button>
+    <div class="progress-bar-wrap">
+      <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      <span id="prog-label">0/150</span>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="main-content"></div>
+
+<footer>
+  <div>Built for Zoho aspirants · Progress auto-saved in browser</div>
+  <div style="margin-top:8px;opacity:.5;">Good luck. You've got this. 🔥</div>
+</footer>
+
+<script>
+const P = [
+  // STRINGS
+  {id:1,  t:'strings', n:'Reverse a String',                             d:'easy',   lc:'https://leetcode.com/problems/reverse-string/',                                                    g:'https://www.geeksforgeeks.org/problems/reverse-a-string/1'},
+  {id:2,  t:'strings', n:'Valid Palindrome',                             d:'easy',   lc:'https://leetcode.com/problems/valid-palindrome/',                                                  g:'https://www.geeksforgeeks.org/problems/palindrome-string0817/1'},
+  {id:3,  t:'strings', n:'Valid Anagram',                                d:'easy',   lc:'https://leetcode.com/problems/valid-anagram/',                                                     g:'https://www.geeksforgeeks.org/problems/anagram-of-string/1'},
+  {id:4,  t:'strings', n:'First Non-Repeating Character',                d:'easy',   lc:'https://leetcode.com/problems/first-unique-character-in-a-string/',                               g:'https://www.geeksforgeeks.org/problems/non-repeating-character/1'},
+  {id:5,  t:'strings', n:'Longest Common Prefix',                        d:'easy',   lc:'https://leetcode.com/problems/longest-common-prefix/',                                             g:'https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1'},
+  {id:6,  t:'strings', n:'Count and Say',                                d:'medium', lc:'https://leetcode.com/problems/count-and-say/',                                                     g:'https://www.geeksforgeeks.org/problems/count-and-say/1'},
+  {id:7,  t:'strings', n:'Longest Substring Without Repeating Chars',   d:'medium', lc:'https://leetcode.com/problems/longest-substring-without-repeating-characters/',                   g:'https://www.geeksforgeeks.org/problems/length-of-the-longest-substring3036/1'},
+  {id:8,  t:'strings', n:'Group Anagrams',                               d:'medium', lc:'https://leetcode.com/problems/group-anagrams/',                                                    g:'https://www.geeksforgeeks.org/problems/print-anagrams-together/1'},
+  {id:9,  t:'strings', n:'Longest Palindromic Substring',                d:'medium', lc:'https://leetcode.com/problems/longest-palindromic-substring/',                                    g:'https://www.geeksforgeeks.org/problems/longest-palindrome-in-a-string3411/1'},
+  {id:10, t:'strings', n:'String to Integer (atoi)',                     d:'medium', lc:'https://leetcode.com/problems/string-to-integer-atoi/',                                           g:'https://www.geeksforgeeks.org/problems/implement-atoi/1'},
+  {id:11, t:'strings', n:'Decode String',                                d:'medium', lc:'https://leetcode.com/problems/decode-string/',                                                     g:'https://www.geeksforgeeks.org/problems/decode-the-string2444/1'},
+  {id:12, t:'strings', n:'Word Break',                                   d:'medium', lc:'https://leetcode.com/problems/word-break/',                                                        g:'https://www.geeksforgeeks.org/problems/word-break1352/1'},
+  {id:13, t:'strings', n:'Minimum Window Substring',                     d:'hard',   lc:'https://leetcode.com/problems/minimum-window-substring/',                                         g:'https://www.geeksforgeeks.org/problems/smallest-window-in-a-string-containing-all-the-characters-of-another-string-1587115621/1'},
+  {id:14, t:'strings', n:'Wildcard Matching',                            d:'hard',   lc:'https://leetcode.com/problems/wildcard-matching/',                                                 g:'https://www.geeksforgeeks.org/problems/wildcard-pattern-matching/1'},
+  {id:15, t:'strings', n:'Regular Expression Matching',                  d:'hard',   lc:'https://leetcode.com/problems/regular-expression-matching/',                                      g:'https://www.geeksforgeeks.org/problems/does-string-p-match-pattern-q0839/1'},
+  {id:16, t:'strings', n:'Palindrome Partitioning',                      d:'medium', lc:'https://leetcode.com/problems/palindrome-partitioning/',                                          g:'https://www.geeksforgeeks.org/problems/palindrome-partitioning/1'},
+  {id:17, t:'strings', n:'Zigzag Conversion',                            d:'medium', lc:'https://leetcode.com/problems/zigzag-conversion/',                                                g:'https://www.geeksforgeeks.org/problems/zigzag-string/1'},
+  {id:18, t:'strings', n:'Longest Repeating Character Replacement',      d:'medium', lc:'https://leetcode.com/problems/longest-repeating-character-replacement/',                          g:'https://www.geeksforgeeks.org/problems/maximum-repeating-character/1'},
+  // ARRAYS
+  {id:19, t:'arrays', n:'Two Sum',                                       d:'easy',   lc:'https://leetcode.com/problems/two-sum/',                                                           g:'https://www.geeksforgeeks.org/problems/key-pair5616/1'},
+  {id:20, t:'arrays', n:'Best Time to Buy and Sell Stock',               d:'easy',   lc:'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/',                                  g:'https://www.geeksforgeeks.org/problems/stock-buy-and-sell2615/1'},
+  {id:21, t:'arrays', n:'Contains Duplicate',                            d:'easy',   lc:'https://leetcode.com/problems/contains-duplicate/',                                               g:'https://www.geeksforgeeks.org/problems/find-duplicates-in-an-array/1'},
+  {id:22, t:'arrays', n:"Maximum Subarray (Kadane's)",                   d:'easy',   lc:'https://leetcode.com/problems/maximum-subarray/',                                                  g:'https://www.geeksforgeeks.org/problems/kadanes-algorithm-1587115620/1'},
+  {id:23, t:'arrays', n:'Rotate Array',                                  d:'medium', lc:'https://leetcode.com/problems/rotate-array/',                                                      g:'https://www.geeksforgeeks.org/problems/rotate-array-by-n-elements-1587115621/1'},
+  {id:24, t:'arrays', n:'Product of Array Except Self',                  d:'medium', lc:'https://leetcode.com/problems/product-of-array-except-self/',                                     g:'https://www.geeksforgeeks.org/problems/product-array-puzzle4525/1'},
+  {id:25, t:'arrays', n:'Find the Duplicate Number',                     d:'medium', lc:'https://leetcode.com/problems/find-the-duplicate-number/',                                        g:'https://www.geeksforgeeks.org/problems/find-duplicates-in-an-array/1'},
+  {id:26, t:'arrays', n:'3Sum',                                          d:'medium', lc:'https://leetcode.com/problems/3sum/',                                                              g:'https://www.geeksforgeeks.org/problems/triplet-sum-in-array-1587115621/1'},
+  {id:27, t:'arrays', n:'Container With Most Water',                     d:'medium', lc:'https://leetcode.com/problems/container-with-most-water/',                                        g:'https://www.geeksforgeeks.org/problems/container-with-most-water0535/1'},
+  {id:28, t:'arrays', n:'Subarray Sum Equals K',                         d:'medium', lc:'https://leetcode.com/problems/subarray-sum-equals-k/',                                            g:'https://www.geeksforgeeks.org/problems/subarray-sum-equals-to-k1917/1'},
+  {id:29, t:'arrays', n:'Merge Intervals',                               d:'medium', lc:'https://leetcode.com/problems/merge-intervals/',                                                   g:'https://www.geeksforgeeks.org/problems/overlapping-intervals--170633/1'},
+  {id:30, t:'arrays', n:'Sort Colors (Dutch National Flag)',              d:'medium', lc:'https://leetcode.com/problems/sort-colors/',                                                      g:'https://www.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1'},
+  {id:31, t:'arrays', n:'Next Permutation',                              d:'medium', lc:'https://leetcode.com/problems/next-permutation/',                                                  g:'https://www.geeksforgeeks.org/problems/next-permutation5226/1'},
+  {id:32, t:'arrays', n:'Jump Game',                                     d:'medium', lc:'https://leetcode.com/problems/jump-game/',                                                         g:'https://www.geeksforgeeks.org/problems/jump-game/1'},
+  {id:33, t:'arrays', n:'Set Matrix Zeroes',                             d:'medium', lc:'https://leetcode.com/problems/set-matrix-zeroes/',                                                g:'https://www.geeksforgeeks.org/problems/boolean-matrix-problem-1587115620/1'},
+  {id:34, t:'arrays', n:'Spiral Matrix',                                 d:'medium', lc:'https://leetcode.com/problems/spiral-matrix/',                                                     g:'https://www.geeksforgeeks.org/problems/spirally-traversing-a-matrix-1587115621/1'},
+  {id:35, t:'arrays', n:'Minimum Platforms (Railways)',                  d:'medium', lc:'https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/',                       g:'https://www.geeksforgeeks.org/problems/minimum-platforms-1587115620/1'},
+  {id:36, t:'arrays', n:'Trapping Rain Water',                           d:'hard',   lc:'https://leetcode.com/problems/trapping-rain-water/',                                               g:'https://www.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1'},
+  {id:37, t:'arrays', n:'Largest Rectangle in Histogram',                d:'hard',   lc:'https://leetcode.com/problems/largest-rectangle-in-histogram/',                                   g:'https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1'},
+  {id:38, t:'arrays', n:'Maximum Product Subarray',                      d:'medium', lc:'https://leetcode.com/problems/maximum-product-subarray/',                                         g:'https://www.geeksforgeeks.org/problems/maximum-product-subarray3604/1'},
+  // HASHING
+  {id:39, t:'hashmap', n:'Two Sum (HashMap approach)',                   d:'easy',   lc:'https://leetcode.com/problems/two-sum/',                                                           g:'https://www.geeksforgeeks.org/problems/key-pair5616/1'},
+  {id:40, t:'hashmap', n:'Isomorphic Strings',                           d:'easy',   lc:'https://leetcode.com/problems/isomorphic-strings/',                                               g:'https://www.geeksforgeeks.org/problems/isomorphic-strings-1587115620/1'},
+  {id:41, t:'hashmap', n:'Word Pattern',                                 d:'easy',   lc:'https://leetcode.com/problems/word-pattern/',                                                      g:'https://www.geeksforgeeks.org/problems/word-pattern/1'},
+  {id:42, t:'hashmap', n:'Longest Consecutive Sequence',                 d:'medium', lc:'https://leetcode.com/problems/longest-consecutive-sequence/',                                     g:'https://www.geeksforgeeks.org/problems/longest-consecutive-subsequence2449/1'},
+  {id:43, t:'hashmap', n:'Top K Frequent Elements',                      d:'medium', lc:'https://leetcode.com/problems/top-k-frequent-elements/',                                          g:'https://www.geeksforgeeks.org/problems/top-k-frequent-elements-in-array/1'},
+  {id:44, t:'hashmap', n:'4Sum',                                         d:'medium', lc:'https://leetcode.com/problems/4sum/',                                                              g:'https://www.geeksforgeeks.org/problems/find-all-four-sum-numbers1732/1'},
+  {id:45, t:'hashmap', n:'Subarray with Zero Sum',                       d:'medium', lc:'https://leetcode.com/problems/continuous-subarray-sum/',                                          g:'https://www.geeksforgeeks.org/problems/subarray-with-0-sum-1587115621/1'},
+  {id:46, t:'hashmap', n:'Count Distinct Elements in Every Window of K', d:'medium', lc:'https://leetcode.com/problems/sliding-window-maximum/',                                           g:'https://www.geeksforgeeks.org/problems/count-distinct-elements-in-every-window/1'},
+  {id:47, t:'hashmap', n:'Largest Subarray with Equal 0s and 1s',        d:'medium', lc:'https://leetcode.com/problems/contiguous-array/',                                                 g:'https://www.geeksforgeeks.org/problems/largest-subarray-with-equal-number-of-0s-and-1s/1'},
+  {id:48, t:'hashmap', n:'LRU Cache',                                    d:'medium', lc:'https://leetcode.com/problems/lru-cache/',                                                         g:'https://www.geeksforgeeks.org/problems/lru-cache/1'},
+  // STACK
+  {id:49, t:'stack', n:'Valid Parentheses',                              d:'easy',   lc:'https://leetcode.com/problems/valid-parentheses/',                                                 g:'https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1'},
+  {id:50, t:'stack', n:'Implement Queue using Stacks',                   d:'easy',   lc:'https://leetcode.com/problems/implement-queue-using-stacks/',                                     g:'https://www.geeksforgeeks.org/problems/queue-using-two-stacks/1'},
+  {id:51, t:'stack', n:'Implement Stack using Queues',                   d:'easy',   lc:'https://leetcode.com/problems/implement-stack-using-queues/',                                     g:'https://www.geeksforgeeks.org/problems/stack-using-two-queues/1'},
+  {id:52, t:'stack', n:'Min Stack',                                      d:'medium', lc:'https://leetcode.com/problems/min-stack/',                                                         g:'https://www.geeksforgeeks.org/problems/special-stack/1'},
+  {id:53, t:'stack', n:'Next Greater Element I',                         d:'easy',   lc:'https://leetcode.com/problems/next-greater-element-i/',                                           g:'https://www.geeksforgeeks.org/problems/next-larger-element-1587115620/1'},
+  {id:54, t:'stack', n:'Next Greater Element II (Circular)',             d:'medium', lc:'https://leetcode.com/problems/next-greater-element-ii/',                                          g:'https://www.geeksforgeeks.org/problems/next-greater-element/1'},
+  {id:55, t:'stack', n:'Daily Temperatures',                             d:'medium', lc:'https://leetcode.com/problems/daily-temperatures/',                                               g:'https://www.geeksforgeeks.org/problems/temperature-rise/1'},
+  {id:56, t:'stack', n:'Evaluate Reverse Polish Notation',               d:'medium', lc:'https://leetcode.com/problems/evaluate-reverse-polish-notation/',                                 g:'https://www.geeksforgeeks.org/problems/evaluation-of-postfix-expression1735/1'},
+  {id:57, t:'stack', n:'Asteroid Collision',                             d:'medium', lc:'https://leetcode.com/problems/asteroid-collision/',                                               g:'https://www.geeksforgeeks.org/problems/asteroid-collision/1'},
+  {id:58, t:'stack', n:'Task Scheduler',                                 d:'medium', lc:'https://leetcode.com/problems/task-scheduler/',                                                   g:'https://www.geeksforgeeks.org/problems/task-scheduler/1'},
+  {id:59, t:'stack', n:'Sliding Window Maximum',                         d:'hard',   lc:'https://leetcode.com/problems/sliding-window-maximum/',                                           g:'https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1'},
+  {id:60, t:'stack', n:'Largest Rectangle in Histogram (Stack)',         d:'hard',   lc:'https://leetcode.com/problems/largest-rectangle-in-histogram/',                                   g:'https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1'},
+  {id:61, t:'stack', n:'Design Circular Queue',                          d:'medium', lc:'https://leetcode.com/problems/design-circular-queue/',                                            g:'https://www.geeksforgeeks.org/problems/implement-circular-queue/1'},
+  {id:62, t:'stack', n:'Remove K Digits to Make Smallest Number',        d:'medium', lc:'https://leetcode.com/problems/remove-k-digits/',                                                  g:'https://www.geeksforgeeks.org/problems/remove-k-digits/1'},
+  // LINKED LIST
+  {id:63, t:'ll', n:'Reverse Linked List',                               d:'easy',   lc:'https://leetcode.com/problems/reverse-linked-list/',                                              g:'https://www.geeksforgeeks.org/problems/reverse-a-linked-list/1'},
+  {id:64, t:'ll', n:'Middle of Linked List',                             d:'easy',   lc:'https://leetcode.com/problems/middle-of-the-linked-list/',                                        g:'https://www.geeksforgeeks.org/problems/finding-middle-element-in-a-linked-list/1'},
+  {id:65, t:'ll', n:'Detect Cycle in Linked List',                       d:'easy',   lc:'https://leetcode.com/problems/linked-list-cycle/',                                                g:'https://www.geeksforgeeks.org/problems/detect-loop-in-linked-list/1'},
+  {id:66, t:'ll', n:'Find Cycle Start Node',                             d:'medium', lc:'https://leetcode.com/problems/linked-list-cycle-ii/',                                             g:'https://www.geeksforgeeks.org/problems/find-the-first-node-of-loop-in-linked-list/1'},
+  {id:67, t:'ll', n:'Merge Two Sorted Lists',                            d:'easy',   lc:'https://leetcode.com/problems/merge-two-sorted-lists/',                                           g:'https://www.geeksforgeeks.org/problems/merge-two-sorted-linked-lists/1'},
+  {id:68, t:'ll', n:'Merge K Sorted Lists',                              d:'hard',   lc:'https://leetcode.com/problems/merge-k-sorted-lists/',                                             g:'https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1'},
+  {id:69, t:'ll', n:'Remove Nth Node from End of List',                  d:'medium', lc:'https://leetcode.com/problems/remove-nth-node-from-end-of-list/',                                 g:'https://www.geeksforgeeks.org/problems/nth-node-from-end-of-linked-list/1'},
+  {id:70, t:'ll', n:'Palindrome Linked List',                            d:'easy',   lc:'https://leetcode.com/problems/palindrome-linked-list/',                                           g:'https://www.geeksforgeeks.org/problems/check-if-linked-list-is-pallindrome/1'},
+  {id:71, t:'ll', n:'Intersection of Two Linked Lists',                  d:'easy',   lc:'https://leetcode.com/problems/intersection-of-two-linked-lists/',                                 g:'https://www.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1'},
+  {id:72, t:'ll', n:'Reverse Nodes in k-Group',                          d:'hard',   lc:'https://leetcode.com/problems/reverse-nodes-in-k-group/',                                         g:'https://www.geeksforgeeks.org/problems/reverse-a-linked-list-in-groups-of-given-size/1'},
+  {id:73, t:'ll', n:'Flatten a Multilevel Doubly Linked List',           d:'medium', lc:'https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/',                          g:'https://www.geeksforgeeks.org/problems/flattening-a-linked-list/1'},
+  {id:74, t:'ll', n:'Rotate List by K Places',                           d:'medium', lc:'https://leetcode.com/problems/rotate-list/',                                                      g:'https://www.geeksforgeeks.org/problems/rotate-a-linked-list/1'},
+  {id:75, t:'ll', n:'Add Two Numbers (Linked List)',                     d:'medium', lc:'https://leetcode.com/problems/add-two-numbers/',                                                  g:'https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1'},
+  {id:76, t:'ll', n:'Copy List with Random Pointer',                     d:'medium', lc:'https://leetcode.com/problems/copy-list-with-random-pointer/',                                    g:'https://www.geeksforgeeks.org/problems/clone-a-linked-list-with-next-and-random-pointer/1'},
+  // TREES
+  {id:77, t:'trees', n:'Inorder / Preorder / Postorder Traversal',       d:'easy',   lc:'https://leetcode.com/problems/binary-tree-inorder-traversal/',                                    g:'https://www.geeksforgeeks.org/problems/tree-traversal/1'},
+  {id:78, t:'trees', n:'Level Order Traversal (BFS)',                    d:'easy',   lc:'https://leetcode.com/problems/binary-tree-level-order-traversal/',                                g:'https://www.geeksforgeeks.org/problems/level-order-traversal/1'},
+  {id:79, t:'trees', n:'Maximum Depth of Binary Tree',                   d:'easy',   lc:'https://leetcode.com/problems/maximum-depth-of-binary-tree/',                                     g:'https://www.geeksforgeeks.org/problems/height-of-binary-tree/1'},
+  {id:80, t:'trees', n:'Diameter of Binary Tree',                        d:'easy',   lc:'https://leetcode.com/problems/diameter-of-binary-tree/',                                          g:'https://www.geeksforgeeks.org/problems/diameter-of-binary-tree/1'},
+  {id:81, t:'trees', n:'Symmetric Tree',                                 d:'easy',   lc:'https://leetcode.com/problems/symmetric-tree/',                                                   g:'https://www.geeksforgeeks.org/problems/symmetric-tree/1'},
+  {id:82, t:'trees', n:'Invert Binary Tree',                             d:'easy',   lc:'https://leetcode.com/problems/invert-binary-tree/',                                               g:'https://www.geeksforgeeks.org/problems/mirror-tree/1'},
+  {id:83, t:'trees', n:'Lowest Common Ancestor of BST',                  d:'easy',   lc:'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/',                  g:'https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1'},
+  {id:84, t:'trees', n:'Validate Binary Search Tree',                    d:'medium', lc:'https://leetcode.com/problems/validate-binary-search-tree/',                                      g:'https://www.geeksforgeeks.org/problems/check-for-bst/1'},
+  {id:85, t:'trees', n:'Kth Smallest Element in BST',                    d:'medium', lc:'https://leetcode.com/problems/kth-smallest-element-in-a-bst/',                                   g:'https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1'},
+  {id:86, t:'trees', n:'Right Side View of Binary Tree',                 d:'medium', lc:'https://leetcode.com/problems/binary-tree-right-side-view/',                                      g:'https://www.geeksforgeeks.org/problems/right-view-of-binary-tree/1'},
+  {id:87, t:'trees', n:'Path Sum II (All Root-to-Leaf Paths)',           d:'medium', lc:'https://leetcode.com/problems/path-sum-ii/',                                                      g:'https://www.geeksforgeeks.org/problems/root-to-leaf-paths-sum/1'},
+  {id:88, t:'trees', n:'Construct Tree from Inorder + Preorder',         d:'medium', lc:'https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/',       g:'https://www.geeksforgeeks.org/problems/construct-tree-1/1'},
+  {id:89, t:'trees', n:'Serialize and Deserialize Binary Tree',          d:'hard',   lc:'https://leetcode.com/problems/serialize-and-deserialize-binary-tree/',                            g:'https://www.geeksforgeeks.org/problems/serialize-and-deserialize-a-binary-tree/1'},
+  {id:90, t:'trees', n:'Binary Tree Maximum Path Sum',                   d:'hard',   lc:'https://leetcode.com/problems/binary-tree-maximum-path-sum/',                                     g:'https://www.geeksforgeeks.org/problems/maximum-path-sum-from-any-node/1'},
+  {id:91, t:'trees', n:'Flatten Binary Tree to Linked List',             d:'medium', lc:'https://leetcode.com/problems/flatten-binary-tree-to-linked-list/',                               g:'https://www.geeksforgeeks.org/problems/flatten-binary-tree-to-linked-list/1'},
+  {id:92, t:'trees', n:'Check if Binary Tree is Balanced',               d:'easy',   lc:'https://leetcode.com/problems/balanced-binary-tree/',                                             g:'https://www.geeksforgeeks.org/problems/check-for-balanced-tree/1'},
+  {id:93, t:'trees', n:'Vertical Order Traversal of Binary Tree',        d:'hard',   lc:'https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/',                       g:'https://www.geeksforgeeks.org/problems/print-a-binary-tree-in-vertical-order/1'},
+  {id:94, t:'trees', n:'Lowest Common Ancestor (General Binary Tree)',   d:'medium', lc:'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/',                         g:'https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-binary-tree/1'},
+  // DP
+  {id:95,  t:'dp', n:'Climbing Stairs',                                  d:'easy',   lc:'https://leetcode.com/problems/climbing-stairs/',                                                   g:'https://www.geeksforgeeks.org/problems/count-ways-to-reach-the-nth-stair-1587115620/1'},
+  {id:96,  t:'dp', n:'House Robber',                                     d:'medium', lc:'https://leetcode.com/problems/house-robber/',                                                      g:'https://www.geeksforgeeks.org/problems/house-robber/1'},
+  {id:97,  t:'dp', n:'House Robber II (Circular)',                       d:'medium', lc:'https://leetcode.com/problems/house-robber-ii/',                                                   g:'https://www.geeksforgeeks.org/problems/house-robber-ii/1'},
+  {id:98,  t:'dp', n:'Coin Change (Minimum Coins)',                      d:'medium', lc:'https://leetcode.com/problems/coin-change/',                                                      g:'https://www.geeksforgeeks.org/problems/number-of-coins1824/1'},
+  {id:99,  t:'dp', n:'Coin Change II (Number of Ways)',                  d:'medium', lc:'https://leetcode.com/problems/coin-change-ii/',                                                   g:'https://www.geeksforgeeks.org/problems/coin-change2448/1'},
+  {id:100, t:'dp', n:'Longest Increasing Subsequence',                   d:'medium', lc:'https://leetcode.com/problems/longest-increasing-subsequence/',                                   g:'https://www.geeksforgeeks.org/problems/longest-increasing-subsequence-1587115620/1'},
+  {id:101, t:'dp', n:'Longest Common Subsequence',                       d:'medium', lc:'https://leetcode.com/problems/longest-common-subsequence/',                                       g:'https://www.geeksforgeeks.org/problems/longest-common-subsequence-1587115620/1'},
+  {id:102, t:'dp', n:'Edit Distance (Levenshtein)',                      d:'hard',   lc:'https://leetcode.com/problems/edit-distance/',                                                    g:'https://www.geeksforgeeks.org/problems/edit-distance3702/1'},
+  {id:103, t:'dp', n:'0/1 Knapsack Problem',                             d:'medium', lc:'https://leetcode.com/problems/partition-equal-subset-sum/',                                      g:'https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1'},
+  {id:104, t:'dp', n:'Partition Equal Subset Sum',                       d:'medium', lc:'https://leetcode.com/problems/partition-equal-subset-sum/',                                      g:'https://www.geeksforgeeks.org/problems/subset-sum-problem2014/1'},
+  {id:105, t:'dp', n:'Matrix Chain Multiplication',                      d:'hard',   lc:'https://leetcode.com/problems/burst-balloons/',                                                   g:'https://www.geeksforgeeks.org/problems/matrix-chain-multiplication0303/1'},
+  {id:106, t:'dp', n:'Unique Paths in Grid',                             d:'medium', lc:'https://leetcode.com/problems/unique-paths/',                                                     g:'https://www.geeksforgeeks.org/problems/number-of-unique-paths5339/1'},
+  {id:107, t:'dp', n:'Minimum Path Sum in Grid',                         d:'medium', lc:'https://leetcode.com/problems/minimum-path-sum/',                                                 g:'https://www.geeksforgeeks.org/problems/minimum-cost-path3833/1'},
+  {id:108, t:'dp', n:'Count Palindromic Substrings',                     d:'medium', lc:'https://leetcode.com/problems/palindromic-substrings/',                                          g:'https://www.geeksforgeeks.org/problems/count-palindrome-sub-strings-of-a-string/1'},
+  {id:109, t:'dp', n:'Longest Palindromic Subsequence',                  d:'medium', lc:'https://leetcode.com/problems/longest-palindromic-subsequence/',                                 g:'https://www.geeksforgeeks.org/problems/longest-palindromic-subsequence-1612327878/1'},
+  {id:110, t:'dp', n:'Maximum Sum Increasing Subsequence',               d:'medium', lc:'https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/',                      g:'https://www.geeksforgeeks.org/problems/maximum-sum-increasing-subsequence4749/1'},
+  {id:111, t:'dp', n:'Word Break (DP)',                                  d:'medium', lc:'https://leetcode.com/problems/word-break/',                                                       g:'https://www.geeksforgeeks.org/problems/word-break1352/1'},
+  {id:112, t:'dp', n:'Decode Ways',                                      d:'medium', lc:'https://leetcode.com/problems/decode-ways/',                                                      g:'https://www.geeksforgeeks.org/problems/total-decoding-messages1235/1'},
+  {id:113, t:'dp', n:'Interleaving String',                              d:'hard',   lc:'https://leetcode.com/problems/interleaving-string/',                                              g:'https://www.geeksforgeeks.org/problems/interleaved-strings/1'},
+  {id:114, t:'dp', n:'Distinct Subsequences',                            d:'hard',   lc:'https://leetcode.com/problems/distinct-subsequences/',                                            g:'https://www.geeksforgeeks.org/problems/number-of-distinct-subsequences/1'},
+  // BINARY SEARCH
+  {id:115, t:'search', n:'Binary Search',                                d:'easy',   lc:'https://leetcode.com/problems/binary-search/',                                                    g:'https://www.geeksforgeeks.org/problems/binary-search-1587115620/1'},
+  {id:116, t:'search', n:'First and Last Position in Sorted Array',      d:'medium', lc:'https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/',         g:'https://www.geeksforgeeks.org/problems/first-and-last-occurrences-of-x3116/1'},
+  {id:117, t:'search', n:'Search in Rotated Sorted Array',               d:'medium', lc:'https://leetcode.com/problems/search-in-rotated-sorted-array/',                                  g:'https://www.geeksforgeeks.org/problems/search-in-a-rotated-array4618/1'},
+  {id:118, t:'search', n:'Find Minimum in Rotated Sorted Array',         d:'medium', lc:'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/',                            g:'https://www.geeksforgeeks.org/problems/minimum-element-in-a-sorted-and-rotated-array3611/1'},
+  {id:119, t:'search', n:'Median of Two Sorted Arrays',                  d:'hard',   lc:'https://leetcode.com/problems/median-of-two-sorted-arrays/',                                     g:'https://www.geeksforgeeks.org/problems/median-of-2-sorted-arrays-of-different-sizes/1'},
+  {id:120, t:'search', n:'Sqrt(x) using Binary Search',                  d:'easy',   lc:'https://leetcode.com/problems/sqrtx/',                                                           g:'https://www.geeksforgeeks.org/problems/square-root/1'},
+  {id:121, t:'search', n:'Kth Smallest Element in Sorted Matrix',        d:'medium', lc:'https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/',                         g:'https://www.geeksforgeeks.org/problems/kth-smallest-number-in-multiplication-table/1'},
+  {id:122, t:'search', n:'Capacity to Ship Packages Within D Days',      d:'medium', lc:'https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/',                         g:'https://www.geeksforgeeks.org/problems/capacity-to-ship-packages-within-d-days/1'},
+  {id:123, t:'search', n:'Aggressive Cows (Binary Search on Answer)',    d:'medium', lc:'https://leetcode.com/problems/maximize-the-minimum-powered-city/',                               g:'https://www.geeksforgeeks.org/problems/aggressive-cows/1'},
+  {id:124, t:'search', n:"Allocate Books (Painter's Partition)",         d:'hard',   lc:'https://leetcode.com/problems/split-array-largest-sum/',                                         g:'https://www.geeksforgeeks.org/problems/allocate-minimum-number-of-pages0937/1'},
+  {id:125, t:'search', n:'Find Peak Element',                            d:'medium', lc:'https://leetcode.com/problems/find-peak-element/',                                               g:'https://www.geeksforgeeks.org/problems/peak-element/1'},
+  {id:126, t:'search', n:'Search a 2D Matrix',                           d:'medium', lc:'https://leetcode.com/problems/search-a-2d-matrix/',                                             g:'https://www.geeksforgeeks.org/problems/search-in-a-matrix17201720/1'},
+  // GRAPH
+  {id:127, t:'graph', n:'Number of Islands',                             d:'medium', lc:'https://leetcode.com/problems/number-of-islands/',                                               g:'https://www.geeksforgeeks.org/problems/find-the-number-of-islands/1'},
+  {id:128, t:'graph', n:'Clone Graph',                                   d:'medium', lc:'https://leetcode.com/problems/clone-graph/',                                                     g:'https://www.geeksforgeeks.org/problems/clone-graph/1'},
+  {id:129, t:'graph', n:'Course Schedule (Cycle Detection)',             d:'medium', lc:'https://leetcode.com/problems/course-schedule/',                                                 g:'https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1'},
+  {id:130, t:'graph', n:'Course Schedule II (Topological Sort)',         d:'medium', lc:'https://leetcode.com/problems/course-schedule-ii/',                                              g:'https://www.geeksforgeeks.org/problems/topological-sort/1'},
+  {id:131, t:'graph', n:'Rotting Oranges (Multi-source BFS)',            d:'medium', lc:'https://leetcode.com/problems/rotting-oranges/',                                                 g:'https://www.geeksforgeeks.org/problems/rotten-oranges2536/1'},
+  {id:132, t:'graph', n:'Word Ladder',                                   d:'hard',   lc:'https://leetcode.com/problems/word-ladder/',                                                     g:'https://www.geeksforgeeks.org/problems/word-ladder/1'},
+  {id:133, t:'graph', n:"Dijkstra's Shortest Path",                      d:'medium', lc:'https://leetcode.com/problems/network-delay-time/',                                             g:'https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1'},
+  {id:134, t:'graph', n:'Bellman-Ford Algorithm',                        d:'medium', lc:'https://leetcode.com/problems/cheapest-flights-within-k-stops/',                                g:'https://www.geeksforgeeks.org/problems/distance-from-the-source-bellman-ford-algorithm/1'},
+  {id:135, t:'graph', n:'Flood Fill',                                    d:'easy',   lc:'https://leetcode.com/problems/flood-fill/',                                                     g:'https://www.geeksforgeeks.org/problems/flood-fill-algorithm1856/1'},
+  {id:136, t:'graph', n:'Is Graph Bipartite?',                           d:'medium', lc:'https://leetcode.com/problems/is-graph-bipartite/',                                             g:'https://www.geeksforgeeks.org/problems/bipartite-graph/1'},
+  {id:137, t:'graph', n:'Minimum Spanning Tree (Kruskal / Prim)',        d:'medium', lc:'https://leetcode.com/problems/min-cost-to-connect-all-points/',                                 g:'https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1'},
+  {id:138, t:'graph', n:'Number of Connected Components',                d:'medium', lc:'https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/',          g:'https://www.geeksforgeeks.org/problems/number-of-provinces/1'},
+  {id:139, t:'graph', n:'Surrounded Regions',                            d:'medium', lc:'https://leetcode.com/problems/surrounded-regions/',                                             g:'https://www.geeksforgeeks.org/problems/replace-os-with-xs0052/1'},
+  {id:140, t:'graph', n:'Pacific Atlantic Water Flow',                   d:'medium', lc:'https://leetcode.com/problems/pacific-atlantic-water-flow/',                                    g:'https://www.geeksforgeeks.org/problems/pacific-atlantic-water-flow/1'},
+  // MATH
+  {id:141, t:'math', n:'Reverse Integer',                                d:'medium', lc:'https://leetcode.com/problems/reverse-integer/',                                                 g:'https://www.geeksforgeeks.org/problems/reverse-bits3556/1'},
+  {id:142, t:'math', n:'Palindrome Number',                              d:'easy',   lc:'https://leetcode.com/problems/palindrome-number/',                                               g:'https://www.geeksforgeeks.org/problems/palindrome-integer/1'},
+  {id:143, t:'math', n:'Power(x, n) — Fast Exponentiation',             d:'medium', lc:'https://leetcode.com/problems/powx-n/',                                                         g:'https://www.geeksforgeeks.org/problems/power-of-numbers-1587115620/1'},
+  {id:144, t:'math', n:'GCD of Two Numbers',                             d:'easy',   lc:'https://leetcode.com/problems/greatest-common-divisor-of-strings/',                            g:'https://www.geeksforgeeks.org/problems/gcd-of-two-numbers3459/1'},
+  {id:145, t:'math', n:'Count Primes (Sieve of Eratosthenes)',           d:'medium', lc:'https://leetcode.com/problems/count-primes/',                                                   g:'https://www.geeksforgeeks.org/problems/count-primes-in-range1604/1'},
+  {id:146, t:'math', n:'Excel Sheet Column Number',                      d:'easy',   lc:'https://leetcode.com/problems/excel-sheet-column-number/',                                      g:'https://www.geeksforgeeks.org/problems/excel-sheet-column-title/1'},
+  {id:147, t:'math', n:'Number of 1 Bits (Hamming Weight)',              d:'easy',   lc:'https://leetcode.com/problems/number-of-1-bits/',                                               g:'https://www.geeksforgeeks.org/problems/set-bits0143/1'},
+  {id:148, t:'math', n:'Single Number (XOR Trick)',                      d:'easy',   lc:'https://leetcode.com/problems/single-number/',                                                  g:'https://www.geeksforgeeks.org/problems/find-the-odd-occurrence4820/1'},
+  {id:149, t:'math', n:'Missing Number',                                 d:'easy',   lc:'https://leetcode.com/problems/missing-number/',                                                  g:'https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1'},
+  {id:150, t:'math', n:'Roman to Integer / Integer to Roman',            d:'medium', lc:'https://leetcode.com/problems/roman-to-integer/',                                               g:'https://www.geeksforgeeks.org/problems/roman-number-to-integer3033/1'},
+];
+
+const SECTIONS = [
+  {t:'strings', label:'🔤 Strings',                  num:'01'},
+  {t:'arrays',  label:'📊 Arrays',                   num:'02'},
+  {t:'hashmap', label:'🗂️ Hashing & HashMaps',       num:'03'},
+  {t:'stack',   label:'📦 Stack & Queue',            num:'04'},
+  {t:'ll',      label:'🔗 Linked Lists',             num:'05'},
+  {t:'trees',   label:'🌲 Trees & BST',              num:'06'},
+  {t:'dp',      label:'💡 Dynamic Programming',      num:'07'},
+  {t:'search',  label:'🔍 Binary Search',            num:'08'},
+  {t:'graph',   label:'🕸️ Graphs',                   num:'09'},
+  {t:'math',    label:'🧮 Math & Bit Manipulation',  num:'10'},
+];
+
+const done = new Set(JSON.parse(localStorage.getItem('zoho_done')||'[]'));
+function save(){ localStorage.setItem('zoho_done',JSON.stringify([...done])); }
+function stats(){
+  const d=done.size;
+  document.getElementById('done-count').textContent=d;
+  document.getElementById('pct').textContent=Math.round(d/150*100)+'%';
+  document.getElementById('prog-fill').style.width=(d/150*100)+'%';
+  document.getElementById('prog-label').textContent=d+'/150';
+}
+function render(filter='all'){
+  const c=document.getElementById('main-content'); c.innerHTML='';
+  for(const s of SECTIONS){
+    const ps=P.filter(p=>p.t===s.t&&(filter==='all'||filter===s.t));
+    if(!ps.length) continue;
+    const sec=document.createElement('div'); sec.className='section'; sec.dataset.topic=s.t;
+    sec.innerHTML=`<div class="section-header"><span class="section-num">${s.num}</span><h2 class="section-title">${s.label}</h2><span class="section-count">${ps.length} problems</span></div>`;
+    for(const p of ps){
+      const row=document.createElement('div');
+      row.className='prob-row'+(done.has(p.id)?' done':'');
+      row.innerHTML=`
+        <div class="check-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L4 7L9 1" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="prob-num">#${p.id}</div>
+        <div class="prob-name">${p.n}</div>
+        <div class="diff-badge diff-${p.d}">${p.d}</div>
+        <a class="link-btn" href="${p.lc}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">↗ LeetCode</a>
+        <a class="link-btn gfg-btn" href="${p.g}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">↗ GFG</a>`;
+      row.addEventListener('click',()=>{
+        done.has(p.id)?done.delete(p.id):done.add(p.id);
+        row.classList.toggle('done'); save(); stats();
+      });
+      sec.appendChild(row);
+    }
+    c.appendChild(sec);
+  }
+}
+function filterTopic(topic,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); render(topic);
+}
+render(); stats();
+</script>
+</body>
+</html>
